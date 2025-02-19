@@ -7,6 +7,9 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include "libft.h"
+#include <sys/wait.h>
+#include <string.h>
+
 //error handle
 int input_errors(int argc, char **argv);
 
