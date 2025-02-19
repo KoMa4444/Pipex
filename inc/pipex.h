@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
-
+#include "libft.h"
 //error handle
 int input_errors(int argc, char **argv);
 
