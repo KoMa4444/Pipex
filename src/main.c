@@ -1,78 +1,87 @@
 #include "../inc/pipex.h"
 
-char *get_src_file(char *filename)
+void execute(char **command, char **envp)
 {
-    char *file;
-    char *txt;
-    int fd;
-    
-    fd = open(filename, O_RDONLY);
-    txt = get_next_line(fd);
-    if (!txt)
-        return (0);
-    file = (char *)ft_calloc(1, sizeof(char));
-    if (!file)
-        return (0);
-    while (txt != 0)
-    {
-        file = ft_strjoin(file, txt);
-        free(txt);
-        txt = get_next_line(fd);
-    }
-    return (file);
+	pid_t pid;
+	int status;
+	char *cmd;
+
+	ft_print_matrix(command);
+	cmd = ft_badstrjoin("/usr/bin/", command[0]);
+	pid = fork();
+	if (pid == -1)
+	{
+		perror("fork");
+		exit(EXIT_FAILURE);
+	}
+	if (pid == 0)
+	{
+		if (execve(cmd, command, envp) == -1)
+		{
+			perror("execve");
+			exit(EXIT_FAILURE);
+		}
+		exit(EXIT_SUCCESS);
+	}
+	else
+		if (wait(&status) == -1)
+			exit(EXIT_FAILURE);
+	free(cmd);
+	free_matrix(command);
 }
 
-void execute_command(char **command, char *file)
+char	**get_cmd(char *arg)
 {
-    pid_t pid;
-    int status;
-    char *cmd;
-
-    cmd = ft_strjoin("/bin/", command[0]);
-    pid = fork();
-    if (pid == -1)
-    {
-        perror("fork");
-        exit(EXIT_FAILURE);
-    }
-    if (pid == 0)
-    {
-        if (execve(cmd, command, NULL) == -1)
-        {
-            perror("execve");
-            exit(EXIT_FAILURE);
-        }
-    }
-    else
-    {
-        waitpid(pid, &status, 0);
-    }
+	char **cmd_flags;
+	
+	cmd_flags = ft_split(arg, ' ');
+	return cmd_flags;
 }
 
-char **get_cmd(char *arg)
+void	cmd1(char **argv, char **envp, int fd[2])
 {
-    char **cmd_flags;
-
-    cmd_flags = ft_split(arg, ' ');
-    return cmd_flags;
+	int file;
+	
+	file = open(argv[1], O_RDONLY, 0777);
+	if (file == -1)
+		exit(EXIT_FAILURE);
+	dup2(fd[0], STDOUT_FILENO);
+	dup2(file, STDIN_FILENO);
+	close(fd[1]);
+	execute(get_cmd(argv[2]), envp);
 }
 
-int main(int argc, char **argv)
+void cmd2(char **argv, char **envp, int fd[2])
 {
-    char *file;
+	int file;
 
-    if (input_errors(argc, argv) == 0)
-        return (0);
+	file = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	if (file == -1)
+		exit(EXIT_FAILURE);
+	dup2(fd[1], STDIN_FILENO);
+	dup2(file, STDOUT_FILENO);
+	close(fd[0]);
+	execute(get_cmd(argv[3]), envp);
+}
 
-    file = get_src_file(argv[1]);
-    ft_printf("\n%s\n", file);
-    free(file);
-    int j = 0;
-    char **matrix = get_cmd(argv[2]);
-    while(matrix[j])
-    {
-        ft_putstr_fd(matrix[j], 1);
-        j++;
-    }
-    return (0);
+int	main(int argc, char **argv, char **envp)
+{
+	int fd[2];
+	int id;
+
+	if (input_errors(argc, argv) == 0)
+		return (1);
+	if (pipe(fd) == -1)
+		return (2);
+	id = fork();
+	if (id == -1)
+		return (3);
+	if (id == 0)
+		cmd1(argv, envp, fd);
+	else
+	{
+		waitpid(id, NULL, 0);
+		cmd2(argv, envp, fd);
+	}
+	return (0);
 }
