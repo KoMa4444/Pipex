@@ -7,7 +7,7 @@ int	input_errors(int argc, char **argv)
 	test_fd = open(argv[1], O_RDONLY);
 	if (argc < 5)
 	{
-		ft_printf("Error, argumentos no válidos\n\nPor favor siga el formato: *srcfile* *cmd1* *cmd2* *dstfile*\n");
+		ft_printf("Error, argumentos no válidos\n\nPor favor siga el formato: <srcfile> <cmd1> <cmd2> <dstfile>\n");
 		exit(EXIT_FAILURE);
 	}
 	if (test_fd == -1)

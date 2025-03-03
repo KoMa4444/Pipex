@@ -1,21 +1,33 @@
 #include "../inc/pipex.h"
 
-char	*find_path(char **envp)
+char	*find_path(char **envp, char *command)
 {
 	char	**path;
+	char	*ret;
 	int		i;
+	int		j;
 
 	i = 0;
+	j = 0;
 	while (envp[i])
 	{
-		if (ft_strncmp(envp[i], "PATH=", 5) == 1)
+		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
 		{
-			path = ft_split(envp[i], ':');
-			ft_print_matrix(path);
-			return (path[0]);
+			path = ft_split(envp[i]+5, ':');
+			while (path[j])
+			{
+				if (access(ft_badstrjoin(path[j], command), X_OK) == 0)
+				{
+					ret = ft_badstrjoin(path[j], command);
+					free_matrix(path);
+					return (ret);
+				}
+				j++;
+			}
 		}
 		i++;
 	}
+	perror("path");
 	exit(5);
 }
 
@@ -23,7 +35,8 @@ void	execute(char **command, char **envp)
 {
 	char	*cmd;
 
-	cmd = ft_badstrjoin(find_path(envp), command[0]);
+	cmd = find_path(envp, ft_badstrjoin("/", command[0]));
+
 	if (execve(cmd, command, envp) == -1)
 	{
 		perror("execve");
@@ -75,8 +88,6 @@ int	main(int argc, char **argv, char **envp)
 	int	chk;
 	int	status;
 
-	ft_print_matrix(envp);
-	ft_putstr_fd(find_path(envp), 1);
 	status = 0;
 	id1 = 0;
 	chk = input_errors(argc, argv);
@@ -96,6 +107,5 @@ int	main(int argc, char **argv, char **envp)
 		close (fd[1]);
 		waitpid(id1, &status, 0);
 	}
-
 	return (WEXITSTATUS(status));
 }

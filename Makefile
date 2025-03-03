@@ -6,7 +6,7 @@ OBJ =		$(SRC:.c=.o)
 HEADER	= -Iinc
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g
 
 %.o : %.c
 	@$(CC) ${CFLAGS} ${HEADER} -c $< -o $@
@@ -16,7 +16,7 @@ all: 		${NAME}
 ${NAME}:	${OBJ}
 	@echo "\033[33m----Compiling lib----"
 	@make re -C lib
-	@$(CC) ${OBJ} -Llib -lft -o ${NAME}
+	@$(CC) -g ${OBJ} -Llib -lft -o ${NAME}
 	@echo "\033[32mPipex Compiled! ᕦ(\033[31m♥\033[32m_\033[31m♥\033[32m)ᕤ\n"
 
 clean:
