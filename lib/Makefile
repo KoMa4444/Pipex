@@ -1,5 +1,5 @@
 # Nombre del archivo
-NAME = inc_lib.a
+NAME = libft.a
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
