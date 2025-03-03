@@ -1,33 +1,36 @@
 #include "../inc/pipex.h"
 
-void execute(char **command, char **envp)
+char	*find_path(char **envp)
 {
-	pid_t pid;
-	int status;
-	char *cmd;
+	char	**path;
+	int		i;
 
-	ft_print_matrix(command);
-	cmd = ft_badstrjoin("/usr/bin/", command[0]);
-	pid = fork();
-	if (pid == -1)
+	i = 0;
+	while (envp[i])
 	{
-		perror("fork");
-		exit(EXIT_FAILURE);
-	}
-	if (pid == 0)
-	{
-		if (execve(cmd, command, envp) == -1)
+		if (ft_strncmp(envp[i], "PATH=", 5) == 1)
 		{
-			perror("execve");
-			exit(EXIT_FAILURE);
+			path = ft_split(envp[i], ':');
+			ft_print_matrix(path);
+			return (path[0]);
 		}
-		exit(EXIT_SUCCESS);
+		i++;
 	}
-	else
-		if (wait(&status) == -1)
-			exit(EXIT_FAILURE);
-	free(cmd);
-	free_matrix(command);
+	exit(5);
+}
+
+void	execute(char **command, char **envp)
+{
+	char	*cmd;
+
+	cmd = ft_badstrjoin(find_path(envp), command[0]);
+	if (execve(cmd, command, envp) == -1)
+	{
+		perror("execve");
+		free_matrix(command);
+		free(cmd);
+		exit(4);
+	}
 }
 
 char	**get_cmd(char *arg)
@@ -42,12 +45,12 @@ void	cmd1(char **argv, char **envp, int fd[2])
 {
 	int file;
 	
-	file = open(argv[1], O_RDONLY, 0777);
+	file = open(argv[1], O_RDONLY);
 	if (file == -1)
 		exit(EXIT_FAILURE);
-	dup2(fd[0], STDOUT_FILENO);
+	dup2(fd[1], STDOUT_FILENO);
 	dup2(file, STDIN_FILENO);
-	close(fd[1]);
+	close(fd[0]);
 	execute(get_cmd(argv[2]), envp);
 }
 
@@ -58,30 +61,41 @@ void cmd2(char **argv, char **envp, int fd[2])
 	file = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (file == -1)
 		exit(EXIT_FAILURE);
-	dup2(fd[1], STDIN_FILENO);
+	dup2(fd[0], STDIN_FILENO);
 	dup2(file, STDOUT_FILENO);
-	close(fd[0]);
+	close(fd[1]);
 	execute(get_cmd(argv[3]), envp);
 }
 
 int	main(int argc, char **argv, char **envp)
 {
-	int fd[2];
-	int id;
+	int	fd[2];
+	int	id0;
+	int	id1;
+	int	chk;
+	int	status;
 
-	if (input_errors(argc, argv) == 0)
-		return (1);
+	ft_print_matrix(envp);
+	ft_putstr_fd(find_path(envp), 1);
+	status = 0;
+	id1 = 0;
+	chk = input_errors(argc, argv);
 	if (pipe(fd) == -1)
 		return (2);
-	id = fork();
-	if (id == -1)
+	id0 = fork();
+	if (id0 == -1)
 		return (3);
-	if (id == 0)
+	if (id0 == 0 && chk == 1)
 		cmd1(argv, envp, fd);
 	else
 	{
-		waitpid(id, NULL, 0);
-		cmd2(argv, envp, fd);
+		id1 = fork();
+		if (id1 == 0)
+			cmd2(argv, envp, fd);
+		close (fd[0]);
+		close (fd[1]);
+		waitpid(id1, &status, 0);
 	}
-	return (0);
+
+	return (WEXITSTATUS(status));
 }

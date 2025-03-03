@@ -15,8 +15,8 @@ SRCS			=	ft_isalnum.c ft_isprint.c ft_memcmp.c  ft_putchar_fd.c ft_split.c \
 					ft_putstr_fd.c  ft_strjoin.c ft_strmapi.c ft_strtrim.c ft_striteri.c \
 					get_next_line.c	get_next_line_utils.c ft_lstadd_back_bonus.c \
 					ft_lstadd_front_bonus.c ft_lstclear_bonus.c \
-          			ft_lstdelone_bonus.c ft_lstiter_bonus.c ft_lstlast_bonus.c \
-         			ft_lstmap_bonus.c ft_lstnew_bonus.c ft_lstsize_bonus.c \
+					ft_lstdelone_bonus.c ft_lstiter_bonus.c ft_lstlast_bonus.c \
+					ft_lstmap_bonus.c ft_lstnew_bonus.c ft_lstsize_bonus.c \
 					ft_printf.c ft_printf_utils.c
 
 OBJS = $(SRCS:.c=.o)
@@ -40,4 +40,4 @@ fclean: clean
 re: fclean all
 
 # Indica que son reglas no archivos
-.PHONY: all clean fclean re 
+.PHONY: all clean fclean re
