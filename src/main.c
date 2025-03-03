@@ -48,7 +48,7 @@ void	execute(char **command, char **envp)
 
 char	**get_cmd(char *arg)
 {
-	char **cmd_flags;
+	char	**cmd_flags;
 	
 	cmd_flags = ft_split(arg, ' ');
 	return cmd_flags;
@@ -56,7 +56,7 @@ char	**get_cmd(char *arg)
 
 void	cmd1(char **argv, char **envp, int fd[2])
 {
-	int file;
+	int	file;
 	
 	file = open(argv[1], O_RDONLY);
 	if (file == -1)
