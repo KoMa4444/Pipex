@@ -7,6 +7,8 @@ char	*find_path(char **envp, char *command)
 	int		i;
 	int		j;
 
+	if (command == NULL)
+		exit(69);
 	i = 0;
 	j = 0;
 	while (envp[i])
@@ -49,21 +51,36 @@ void	execute(char **command, char **envp)
 char	**get_cmd(char *arg)
 {
 	char	**cmd_flags;
-	
+	char	**chk;
+
 	cmd_flags = ft_split(arg, ' ');
+	if (ft_strchr(cmd_flags[0], '/') == 1)
+	{
+		chk = ft_split(cmd_flags[0], '/');
+		while (*(chk + 1) != NULL)
+		{
+			chk++;
+			free(*chk);
+		}
+		free(cmd_flags[0]);
+		cmd_flags[0] = ft_strdup(*chk);
+	}
 	return cmd_flags;
 }
 
 void	cmd1(char **argv, char **envp, int fd[2])
 {
 	int	file;
-	
+
+	if (argv[3] == NULL)
+		return ;
 	file = open(argv[1], O_RDONLY);
 	if (file == -1)
 		exit(EXIT_FAILURE);
 	dup2(fd[1], STDOUT_FILENO);
 	dup2(file, STDIN_FILENO);
 	close(fd[0]);
+	close(file);
 	execute(get_cmd(argv[2]), envp);
 }
 
@@ -71,6 +88,8 @@ void cmd2(char **argv, char **envp, int fd[2])
 {
 	int file;
 
+	if (argv[3] == NULL)
+		return ;
 	file = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (file == -1)
 		exit(EXIT_FAILURE);
