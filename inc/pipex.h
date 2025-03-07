@@ -6,7 +6,7 @@
 /*   By: mkollar <mkollar@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 20:04:42 by mkollar           #+#    #+#             */
-/*   Updated: 2025/03/03 20:04:46 by mkollar          ###   ########.fr       */
+/*   Updated: 2025/03/07 17:37:43 by mkollar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 int		input_errors(int argc, char **argv);
 
 //main functions
+char	*find_path(char **envp, char *command);
 
 //matrix management
 void	free_matrix(char **matrix);

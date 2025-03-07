@@ -29,7 +29,7 @@ char	*find_path(char **envp, char *command)
 		}
 		i++;
 	}
-	perror("path");
+	perror("\033[31mERROR: command not found");
 	exit(5);
 }
 
@@ -37,8 +37,10 @@ void	execute(char **command, char **envp)
 {
 	char	*cmd;
 
-	cmd = find_path(envp, ft_badstrjoin("/", command[0]));
-
+	if (access(command[0], X_OK) == 0)
+		cmd = command[0];
+	else
+		cmd = find_path(envp, ft_badstrjoin("/", command[0]));
 	if (execve(cmd, command, envp) == -1)
 	{
 		perror("execve");
@@ -51,20 +53,8 @@ void	execute(char **command, char **envp)
 char	**get_cmd(char *arg)
 {
 	char	**cmd_flags;
-	char	**chk;
 
 	cmd_flags = ft_split(arg, ' ');
-	if (ft_strchr(cmd_flags[0], '/') == 1)
-	{
-		chk = ft_split(cmd_flags[0], '/');
-		while (*(chk + 1) != NULL)
-		{
-			chk++;
-			free(*chk);
-		}
-		free(cmd_flags[0]);
-		cmd_flags[0] = ft_strdup(*chk);
-	}
 	return cmd_flags;
 }
 
