@@ -1,6 +1,7 @@
 NAME =	pipex
 
-SRC = 	src/main.c src/error_handle.c src/matrix_management.c 
+SRC = 	src/main.c src/error_handle.c src/matrix_management.c 	\
+				src/find_path.c src/execute_comm.c
 OBJ =		$(SRC:.c=.o)
 
 HEADER	= -Iinc
