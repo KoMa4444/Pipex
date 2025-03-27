@@ -6,7 +6,7 @@
 /*   By: mkollar <mkollar@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 18:51:14 by mkollar           #+#    #+#             */
-/*   Updated: 2024/09/25 17:02:13 by mkollar          ###   ########.fr       */
+/*   Updated: 2025/03/27 17:46:58 by mkollar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int		ft_atoi(const char *nptr);
 void	*ft_calloc(size_t nmemb, size_t size);
 char	*ft_strdup(const char *s);
 
-// Parte 2 - FUNCIONES ADICIONALES
+// Part 2 - ADITIONAL FUNCTIONS
 
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 
@@ -66,7 +66,7 @@ void	ft_putstr_fd(char *s, int fd);
 void	ft_putendl_fd(char *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
 
-// opcionales
+// OPTIONALS
 
 t_list	*ft_lstnew(void *content);
 void	ft_lstadd_front(t_list **lst, t_list *new);

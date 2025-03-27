@@ -6,13 +6,11 @@
 /*   By: mkollar <mkollar@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 18:22:42 by mkollar           #+#    #+#             */
-/*   Updated: 2025/03/14 18:51:45 by mkollar          ###   ########.fr       */
+/*   Updated: 2025/03/27 17:46:47 by mkollar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/pipex.h"
-
-
 
 int	main(int argc, char **argv, char **envp)
 {
